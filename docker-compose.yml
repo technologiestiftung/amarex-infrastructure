@@ -1,0 +1,30 @@
+version: "3"
+services:
+  rapimo:
+    build:
+      context: https://github.com/technologiestiftung/rapimo.git#main
+      dockerfile: Dockerfile.rapimo
+    container_name: rapimo
+    ports:
+      - "8000:8000"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - rapimo
+
+  mapfish:
+    build:
+      context: https://github.com/technologiestiftung/amarex-report.git#main
+      dockerfile: Dockerfile
+    container_name: mapfish
+    ports:
+      - "8080:8080"
